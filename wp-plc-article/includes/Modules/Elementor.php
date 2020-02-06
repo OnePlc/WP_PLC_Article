@@ -68,6 +68,12 @@ final class Elementor {
             require_once(__DIR__ . '/../elementor/widgets/article-slider.php');
             \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Article_Slider());
         }
+
+        # Load Article Search if active
+        if(get_option( 'plcarticle_elementor_article_search_active') == 1) {
+            require_once(__DIR__ . '/../elementor/widgets/article-search.php');
+            \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \WPPLC_Article_Search());
+        }
     }
 
     /**
@@ -94,6 +100,7 @@ final class Elementor {
     public function registerSettings() {
         // Widgets
         register_setting( 'wpplc_article_elementor', 'plcarticle_elementor_article_slider_active', false );
+        register_setting( 'wpplc_article_elementor', 'plcarticle_elementor_article_search_active', false );
     }
 
     /**

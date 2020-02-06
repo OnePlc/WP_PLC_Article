@@ -14,6 +14,17 @@
     </div>
     <!--Enable Article Slider -->
 
+    <!-- Enable Article Search -->
+    <div class="plc-admin-settings-field">
+        <label class="plc-settings-switch">
+            <?php $bElementorArticleSearchActive = get_option( 'plcarticle_elementor_article_search_active', false ); ?>
+            <input name="plcarticle_elementor_article_search_active" type="checkbox" <?=($bElementorArticleSearchActive == 1)?'checked':''?> class="plc-settings-value" />
+            <span class="plc-settings-slider"></span>
+        </label>
+        <span>Enable Article Search</span>
+    </div>
+    <!--Enable Article Search -->
+
     <hr/>
     <button class="plc-admin-settings-save plc-admin-btn plc-admin-btn-primary" plc-admin-page="page-elementor">Save Elementor Settings</button>
     <!-- Save Button -->

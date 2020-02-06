@@ -21,7 +21,7 @@ class WPPLC_Article_List extends Widget_Base {
     }
 
     public function get_icon() {
-        return 'fa fa-images';
+        return 'fa fa-list';
     }
 
     public function get_categories() {
@@ -373,7 +373,6 @@ class WPPLC_Article_List extends Widget_Base {
 
         # Section - End
         $this->end_controls_section();
-
         /**
          * STYLE SETTINGS - TITLE - END
          * @since 1.0.0
