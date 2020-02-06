@@ -6,7 +6,7 @@
  * @package   OnePlace\Article\Modules
  * @copyright 2019 Verein onePlace
  * @license   https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html GNU General Public License, version 2
- * @link      https://1plc.ch/wordpress-plugins/swissknife
+ * @link      https://1plc.ch/wordpress-plugins/article
  */
 
 namespace OnePlace\Article\Modules;
@@ -29,10 +29,7 @@ final class Settings {
      */
     public function register() {
         // Add submenu page for settings
-        add_action("admin_menu", [ $this, 'addSubMenuPage' ]);
-
-        // Add submenu page for settings
-        add_action("admin_menu", [ $this, 'addMySubMenuPage' ], 99);
+        add_action("admin_menu", [ $this, 'addSubMenuPage' ], 99);
 
         // Register Settings
         add_action( 'admin_init', [ $this, 'registerSettings' ] );
@@ -74,11 +71,6 @@ final class Settings {
      * @since 1.0.0
      */
     public function addSubMenuPage() {
-        add_submenu_page( 'oneplace-connect', 'OnePlace Connect', 'OnePlace Connect',
-            'manage_options', 'oneplace-connect' );
-    }
-
-    public function addMySubMenuPage() {
         add_submenu_page( 'oneplace-connect', 'OnePlace Article', 'Article',
             'manage_options', 'oneplace-article',  [$this,'renderArticleSettingsPage'] );
     }

@@ -69,22 +69,22 @@
             <div class="plc-admin-page-container" style="width:100%; display: inline-block; float: left;">
                 <?php
                 // Include Settings Pages
-                require_once __DIR__.'/partials/general.php';
+                require_once __DIR__.'/settings/general.php';
                 if(get_option('plcarticle_elementor_active') == 1) {
                     // Include Elementor Settings
-                    require_once __DIR__.'/partials/elementor.php';
+                    require_once __DIR__.'/settings/elementor.php';
                 }
                 if(get_option('plcarticle_shortcodes_active') == 1) {
                     // Include Shortcodes Settings
-                    require_once __DIR__.'/partials/shortcodes.php';
+                    require_once __DIR__.'/settings/shortcodes.php';
                 }
                 if(get_option('plcarticle_singleview_active') == 1) {
                     // Include Single View Settings
-                    require_once __DIR__.'/partials/singleview.php';
+                    require_once __DIR__.'/settings/singleview.php';
                 }
                 if(get_option('plcarticle_listview_active') == 1) {
                     // Include Single View Settings
-                    require_once __DIR__.'/partials/listview.php';
+                    require_once __DIR__.'/settings/listview.php';
                 }
                 ?>
             </div>

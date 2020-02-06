@@ -2,8 +2,9 @@
 ?>
 <div style="width:100%;" class="plc-article-search-widget">
     <form action="<?=$aSettings['search_button_link']['url']?>" method="GET">
-        <h3><?=$aSettings['search_title']?></h3>
-
+        <?php if($aSettings['search_title'] != '') { ?>
+            <h3><?=$aSettings['search_title']?></h3>
+        <?php }?>
         <div>
             <input type="text" name="q" placeholder="<?=$aSettings['search_button_text']?>" />
         </div>
