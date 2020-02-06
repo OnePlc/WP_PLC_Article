@@ -50,6 +50,13 @@
                                 </a>
                             </li>
                         <?php } ?>
+                        <?php if(get_option('plcarticle_listview_active') == true) { ?>
+                            <li class="plc-admin-menu-list-item">
+                                <a href="#/listview">
+                                    <?=__('List View','wp-plc-article')?>
+                                </a>
+                            </li>
+                        <?php } ?>
                     </ul>
                 </nav>
                 <div class="plc-admin-alert-container" style="float:left; width:30%; padding:40px 0 40px 0;">
@@ -74,6 +81,10 @@
                 if(get_option('plcarticle_singleview_active') == 1) {
                     // Include Single View Settings
                     require_once __DIR__.'/partials/singleview.php';
+                }
+                if(get_option('plcarticle_listview_active') == 1) {
+                    // Include Single View Settings
+                    require_once __DIR__.'/partials/listview.php';
                 }
                 ?>
             </div>

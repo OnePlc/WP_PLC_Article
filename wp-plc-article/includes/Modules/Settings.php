@@ -31,6 +31,9 @@ final class Settings {
         // Add submenu page for settings
         add_action("admin_menu", [ $this, 'addSubMenuPage' ]);
 
+        // Add submenu page for settings
+        add_action("admin_menu", [ $this, 'addMySubMenuPage' ], 99);
+
         // Register Settings
         add_action( 'admin_init', [ $this, 'registerSettings' ] );
 
@@ -62,6 +65,7 @@ final class Settings {
         register_setting( 'wpplc_article', 'plcarticle_elementor_active', false );
         register_setting( 'wpplc_article', 'plcarticle_shortcodes_active', false );
         register_setting( 'wpplc_article', 'plcarticle_singleview_active', false );
+        register_setting( 'wpplc_article', 'plcarticle_listview_active', false );
     }
 
     /**
@@ -70,19 +74,13 @@ final class Settings {
      * @since 1.0.0
      */
     public function addSubMenuPage() {
-        $page_title = 'OnePlace Article';
-        $menu_title = 'Article';
-        $capability = 'manage_options';
-        $menu_slug  = 'oneplace-connect';
-        $function   = [$this,'AdminMenu'];
-        $icon_url   = 'dashicons-media-code';
-        $position   = 5;
+        add_submenu_page( 'oneplace-connect', 'OnePlace Connect', 'OnePlace Connect',
+            'manage_options', 'oneplace-connect' );
+    }
 
-        add_submenu_page( $menu_slug, 'OnePlace Connect', 'OnePlace Connect',
-            'manage_options', $menu_slug );
-
-        add_submenu_page( $menu_slug, $page_title, $menu_title,
-            'manage_options', 'oneplace-shop',  [$this,'renderSettingsPage'] );
+    public function addMySubMenuPage() {
+        add_submenu_page( 'oneplace-connect', 'OnePlace Article', 'Article',
+            'manage_options', 'oneplace-article',  [$this,'renderArticleSettingsPage'] );
     }
 
     /**
@@ -102,7 +100,7 @@ final class Settings {
      *
      * @since 1.0.0
      */
-    public function renderSettingsPage() {
+    public function renderArticleSettingsPage() {
         require_once __DIR__.'/../view/settings.php';
     }
 

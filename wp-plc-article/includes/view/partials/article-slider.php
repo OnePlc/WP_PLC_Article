@@ -6,11 +6,11 @@
             <!-- Slide -->
             <div class="swiper-slide">
                 <div style="display: inline-block; width:100%;">
-                    <?php if(isset($oItem->image)) { ?>
+                    <?php if(isset($oItem->featured_image)) { ?>
                     <!-- Slide Image -->
                     <figure class="plc-slider-image-box-img" style="width:100%; margin-bottom: <?=$aSettings['slider_item_spacer']['size'].$aSettings['slider_item_spacer']['unit']?>;">
                         <a href="#<?=$oItem->id?>" class="plc-article-popup" title="Mehr Informationen">
-                            <div style="height:200px; width:100%; min-width:100%; background:url(<?=$sHost?>/data/article/<?=$oItem->id?>/avatar.png) no-repeat 100% 50%; background-size:cover;">
+                            <div style="height:200px; width:100%; min-width:100%; background:url(<?=$sHost?><?=$oItem->featured_image?>) no-repeat 100% 50%; background-size:cover;">
                                 &nbsp;
                             </div>
                         </a>
@@ -25,11 +25,40 @@
                             <?php $sClass = (get_option('plcarticle_singleview_slug')) ? '' : 'plc-article-popup'; ?>
                             <a href="<?=$sHref?>" class="<?=$sClass?>" title="Mehr Informationen">
                                 <h3 class="plc-slider-title" style="display: inline-block; width:100%; vertical-align:middle; text-align:<?=$aSettings['event_title_align']?>;">
-                                    <?= $oItem->text ?>
+                                    <?php if(isset($oItem->label)) {
+                                        echo $oItem->label;
+                                    } else {
+                                        echo $oItem->text;
+                                    } ?>
                                 </h3>
                             </a>
                         </div>
                         <!-- Title -->
+                        <div style="width:100%; display: inline-block;">
+                            <?php
+                            if(count($aSettings['slider_featured_fields']) > 0) {
+                                foreach($aSettings['slider_featured_fields'] as $sFieldKey) { ?>
+                                    <div style="width:100%; display: inline-block;">
+                                        <div style="float:left; width:49%;" class="plc-slider-attribute-label"><?=$aFields[$sFieldKey]?></div>
+                                        <div style="float:left; width:49%; text-align:right;" class="plc-slider-attribute-value">
+                                        <?php
+                                        if(isset($oItem->$sFieldKey)) {
+                                            if(is_object($oItem->$sFieldKey)) {
+                                                echo $oItem->$sFieldKey->label;
+                                            } else {
+                                                echo $oItem->$sFieldKey;
+                                            }
+                                        } else {
+                                            echo '-';
+                                        }
+                                        ?>
+                                        </div>
+                                    </div>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </div>
                     </div>
                     <!-- Slide Content -->
                 </div>

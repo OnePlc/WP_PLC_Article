@@ -1,5 +1,4 @@
 jQuery(function() {
-    console.log('slider script loaded');
     jQuery('.plc-article-swiper-container').each(function () {
         var iSliderPerView = jQuery(this).attr('data-slides-per-view');
         var mySwiper = new Swiper(jQuery(this), {

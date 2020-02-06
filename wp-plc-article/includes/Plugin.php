@@ -56,6 +56,11 @@ final class Plugin {
         if(get_option('plcarticle_singleview_active') == 1) {
             Modules\Singleview::load();
         }
+
+        // Enable List View
+        if(get_option('plcarticle_listview_active') == 1) {
+            Modules\Listview::load();
+        }
     }
 
     /**

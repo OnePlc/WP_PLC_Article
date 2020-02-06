@@ -26,6 +26,7 @@ require_once __DIR__.'/Plugin.php';
 require_once __DIR__.'/Modules/Settings.php';
 require_once __DIR__.'/Modules/Shortcodes.php';
 require_once __DIR__.'/Modules/Singleview.php';
+require_once __DIR__.'/Modules/Listview.php';
 require_once __DIR__.'/Modules/Elementor.php';
 
 Plugin::load(WPPLC_ARTICLE_MAIN_FILE);

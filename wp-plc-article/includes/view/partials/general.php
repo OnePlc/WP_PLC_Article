@@ -41,6 +41,17 @@
         </div>
         <!-- Enable Article Single View -->
 
+        <!-- Enable Article List View -->
+        <div class="plc-admin-settings-field">
+            <label class="plc-settings-switch">
+                <?php $bListViewActive = get_option( 'plcarticle_listview_active', false ); ?>
+                <input name="plcarticle_listview_active" type="checkbox" <?=($bListViewActive == 1)?'checked':''?> class="plc-settings-value" />
+                <span class="plc-settings-slider"></span>
+            </label>
+            <span>Enable Article List View</span>
+        </div>
+        <!-- Enable Article List View -->
+
     <?php } else { ?>
         <p style="color:red;">Elementor Version <?=ELEMENTOR_VERSION?> found. <br><i>Please Update to at least 2.7.0</i></p>
     <?php } ?>
