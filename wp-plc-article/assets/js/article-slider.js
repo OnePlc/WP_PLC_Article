@@ -24,4 +24,11 @@ jQuery(function() {
             }
         });
     });
+
+    jQuery('.plc-list-swiper-container').each(function () {
+        var mySwiper = new Swiper(jQuery(this), {
+            direction: 'horizontal',
+            loop: true
+        });
+    });
 });

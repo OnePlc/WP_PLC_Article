@@ -267,7 +267,7 @@ class WPPLC_Article_Slider extends \Elementor\Widget_Base {
 
         # Slide Attributes Left Color
         $this->add_control(
-            'slider_slide_attr_ight_color',
+            'slider_slide_attr_right_color',
             [
                 'label' => __( 'Textfarbe', 'wp-plc-article' ),
                 'type' => Controls_Manager::COLOR,

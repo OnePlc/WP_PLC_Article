@@ -39,6 +39,14 @@ final class Elementor {
 
         // enqueue slider custom scripts for frontend
         add_action( 'wp_enqueue_scripts', [$this,'enqueueScripts'] );
+
+        add_action( 'elementor/controls/controls_registered', [ $this, 'registerElementorControls' ] );
+    }
+
+    public function registerElementorControls() {
+        require_once(__DIR__ . '/../elementor/controls/plcmultisortable-control.php');
+        $controls_manager = \Elementor\Plugin::$instance->controls_manager;
+        $controls_manager->register_control( 'plc-multi-sortable', new \OnePlace\Elementor\Controls\WPPLC_Multisortable_Control() );
     }
 
     /**
