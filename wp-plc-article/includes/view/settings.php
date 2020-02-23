@@ -11,7 +11,7 @@
                     </div>
                 </div>
                 <div style="width:33%; text-align: center;">
-                    <img src="<?=WPPLC_ARTICLE_PUB_DIR?>/assets/img/icon.png" style="max-height:42px;"/>
+                    <img src="<?=plugins_url('assets/img/icon.png', WPPLC_ARTICLE_MAIN_FILE)?>" style="max-height:42px;"/>
                 </div>
                 <div style="width:33%; text-align: right;">
                     Need help?
@@ -67,6 +67,7 @@
 
             <!-- Content START -->
             <div class="plc-admin-page-container" style="width:100%; display: inline-block; float: left;">
+                <?php wp_nonce_field( 'oneplace-settings-update' ); ?>
                 <?php
                 // Include Settings Pages
                 require_once __DIR__.'/settings/general.php';

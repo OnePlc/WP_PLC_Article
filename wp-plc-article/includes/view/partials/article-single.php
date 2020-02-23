@@ -13,8 +13,30 @@ if(is_array($aFields)) {
         }
     }
 }
+$aImages = [];
+if($oItem->featured_image != '') {
+    $aImages[] = $sHost.$oItem->featured_image;
+}
 $sTitle = str_replace($aFindPlaceholders,$aReplacePlaceholders,$aSettings['singleview_title_template']);
+$sArticleNr = (isset($oItem->custom_art_nr)) ? $oItem->custom_art_nr : $oItem->id;
+$sBrand = (isset($oItem->manufacturer_idfs)) ? $oItem->manufacturer_idfs->label : '-';
 ?>
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "<?=$sTitle?>",
+        "offers": {},
+        "mpn": "<?=$sArticleNr?>",
+        "image": <?=json_encode($aImages)?>,
+        "description": "<?=strip_tags($oItem->description)?>",
+        "sku": "<?=$sArticleNr?>",
+        "brand": {
+            "@type": "Thing",
+            "name": "<?=$sBrand?>"
+        }
+    }
+</script>
 <div id="plc-article-single-view-<?=$sSliderID?>" class="plc-article-single-view">
     <div style="width:100%; float:left;">
         <h3><?=$sTitle?></h3>
@@ -111,3 +133,13 @@ $sTitle = str_replace($aFindPlaceholders,$aReplacePlaceholders,$aSettings['singl
        </div>
     <?php } ?>
 </div>
+<script>
+    jQuery(function() {
+        jQuery('.plc-list-swiper-container').each(function () {
+            var mySwiper = new Swiper(jQuery(this), {
+                direction: 'horizontal',
+                loop: true
+            });
+        });
+    });
+</script>

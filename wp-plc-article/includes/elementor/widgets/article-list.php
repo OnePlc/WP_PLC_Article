@@ -7,7 +7,6 @@ use Elementor\Scheme_Typography;
 use Elementor\Widget_Base;
 
 class WPPLC_Article_List extends Widget_Base {
-
     public function __construct($data = [], $args = null) {
         parent::__construct($data, $args);
     }
@@ -28,46 +27,59 @@ class WPPLC_Article_List extends Widget_Base {
         return ['wp-plc-article'];
     }
 
-    protected function render() {
+    protected function render()
+    {
         # Get Elementor Widgets Settings
         $aSettings = $this->get_settings_for_display();
 
-        # Get Article ID
-        //$iArticleID = get_query_var('article_id');
 
-        # Get Articles from onePlace API
-        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/0', ['listmode'=>'entity']);
+        # Get Article ID
+        $aParams = ['listmode' => 'entity'];
+        $sLang = '';
+        $iPage = (int)get_query_var('list_page_id');
+        $iBaseCat = (int)get_query_var('list_base_category');
+        $aSettings['list_base_category'] = $iBaseCat;
+        if (defined('ICL_LANGUAGE_CODE')) {
+            if (ICL_LANGUAGE_CODE == 'en') {
+                $sLang = 'en_US';
+            }
+            if (ICL_LANGUAGE_CODE == 'de') {
+                $sLang = 'de_DE';
+            }
+            $aParams['lang'] = $sLang;
+        }
+        if($iPage == 0) {
+            $iPage = 1;
+        }
+
+        $sSliderID = \Elementor\Utils::generate_random_string();
+
+        if($iBaseCat != 0) {
+            $aParams['listmodefilter'] = 'webonly';
+            $aParams['filter'] = 'category';
+            $aParams['filtervalue'] = $iBaseCat;
+        }
+
+        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/'.$iPage, $aParams);
 
         if ($oAPIResponse->state == 'success') {
-            # get items
             $aItems = $oAPIResponse->results;
-
-            # Generate Elementor Unique ID for Slider
-            $sSliderID = \ Elementor\Utils::generate_random_string();
-
-            # Get Fields from onePlace
+            $iPages = $oAPIResponse->pages;
             $aFields = [];
-            $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/getfields/0');
-            if (is_object($oAPIResponse)) {
-                if ($oAPIResponse->state == 'success') {
-                    if (count($oAPIResponse->aFields) > 0) {
-                        foreach ($oAPIResponse->aFields as $oField) {
-                            $aFields[$oField->fieldkey] = $oField->label;
-                        }
+
+            $oAPISubResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/getfields/0', ['lang' => $sLang]);
+            if($oAPISubResponse->state == 'success') {
+                $aFieldsAPI = (array)$oAPISubResponse->aFields;
+                if(count($aFieldsAPI) > 0) {
+                    foreach($aFieldsAPI as $oField) {
+                        $aFields[$oField->fieldkey] = $oField->label;
                     }
-                } else {
-                    echo 'Error: ' . $oAPIResponse->message;
                 }
-
-                $sHost = \OnePlace\Connect\Plugin::getCDNServerAddress();
-
-                # Load Template
-                include __DIR__ . '/../../view/partials/article-list.php';
-            } else {
-                echo 'error loading fields';
             }
+
+            require_once(__DIR__ . '/../../view/partials/article-list.php');
         } else {
-            echo 'Error: ' . $oAPIResponse->message;
+            echo 'error loading articles';
         }
     }
 
@@ -85,8 +97,9 @@ class WPPLC_Article_List extends Widget_Base {
         $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/getfields/0');
         if(is_object($oAPIResponse)) {
             if($oAPIResponse->state == 'success') {
-                if(count($oAPIResponse->aFields) > 0) {
-                    foreach($oAPIResponse->aFields as $oField) {
+                $aFieldsAPI = (array)$oAPIResponse->aFields;
+                if(count($aFieldsAPI) > 0) {
+                    foreach($aFieldsAPI as $oField) {
                         $aFields[$oField->fieldkey] = $oField->label;
                     }
                 }
@@ -137,6 +150,18 @@ class WPPLC_Article_List extends Widget_Base {
                 'type' => \Elementor\Controls_Manager::SELECT2,
                 'multiple' => true,
                 'options' => $aFields,
+            ]
+        );
+
+        $this->add_control(
+            'listview_hide_emptyfields',
+            [
+                'label' => __( 'Hide empty fields', 'wp-plc-article' ),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'label_on' => __( 'Hide', 'wp-plc-article' ),
+                'label_off' => __( 'Show', 'wp-plc-article' ),
+                'return_value' => 'yes',
+                'default' => 'no',
             ]
         );
 

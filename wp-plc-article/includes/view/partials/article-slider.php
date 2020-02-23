@@ -20,8 +20,17 @@
                     <!-- Slide Content -->
                     <div class="plc-article-slider-box-content" style="width:100%; text-align:center; margin-top:<?=$aSettings['slider_item_spacer']['size'].$aSettings['slider_item_spacer']['unit']?>; margin-bottom:<?=$aSettings['slider_item_spacer']['size'].$aSettings['slider_item_spacer']['unit']?>; min-height:200px;">
                         <!-- Title -->
-                        <div style="height:90px; position: relative; overflow:hidden; vertical-align: middle;">
-                            <?php $sHref = (get_option('plcarticle_singleview_slug')) ? '/'.get_option('plcarticle_singleview_slug').'/'.$oItem->id : '#'.$oItem->id; ?>
+                        <div style="position: relative; overflow:hidden; vertical-align: middle;">
+                            <?php
+                            $sHref = '#';
+                            if(get_option('plcarticle_singleview_slug')) {
+                                $sHref = '/'.get_option('plcarticle_singleview_slug');
+                                $sHref .= '/'.str_replace([' '],['-'],strtolower($oItem->label));
+                                if(isset($oItem->custom_art_nr)) {
+                                    $sHref .= '-vib-'.str_replace([' '],['-'],strtolower($oItem->custom_art_nr));
+                                }
+                                $sHref .= '/'.$oItem->id;
+                            } ?>
                             <?php $sClass = (get_option('plcarticle_singleview_slug')) ? '' : 'plc-article-popup'; ?>
                             <a href="<?=$sHref?>" class="<?=$sClass?>" title="Mehr Informationen">
                                 <h3 class="plc-slider-title" style="display: inline-block; width:100%; vertical-align:middle; text-align:<?=$aSettings['event_title_align']?>;">
@@ -33,14 +42,14 @@
                                 </h3>
                             </a>
                         </div>
-                        <!-- Title -->
-                        <div style="width:100%; display: inline-block;">
+                        <!-- Fields -->
+                        <div style="margin-top:20px; width:100%; display: inline-block;">
                             <?php
                             if(is_array($aSettings['slider_featured_fields'])) {
                                 if (count($aSettings['slider_featured_fields']) > 0) {
                                     foreach ($aSettings['slider_featured_fields'] as $sFieldKey) { ?>
                                         <div style="width:100%; display: inline-block;">
-                                            <div style="float:left; width:49%;"
+                                            <div style="float:left; width:49%; text-align:left;"
                                                  class="plc-slider-attribute-label"><?= $aFields[$sFieldKey] ?></div>
                                             <div style="float:left; width:49%; text-align:right;"
                                                  class="plc-slider-attribute-value">

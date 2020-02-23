@@ -34,14 +34,23 @@ class WPPLC_Article_Single extends Widget_Base {
 
         # Get Article ID
         $iArticleID = get_query_var('article_id');
-
         if(empty($iArticleID)) {
             $iArticleID = 1;
         }
 
+        $sLang = 'de_DE';
+        if(defined('ICL_LANGUAGE_CODE')) {
+            if (ICL_LANGUAGE_CODE == 'en') {
+                $sLang = 'en_US';
+            }
+            if (ICL_LANGUAGE_CODE == 'de') {
+                $sLang = 'de_DE';
+            }
+        }
+
         if(is_numeric($iArticleID) && !empty($iArticleID)) {
             # Get Articles from onePlace API
-            $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/get/' . $iArticleID, []);
+            $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/get/' . $iArticleID, ['lang' => $sLang]);
 
             if ($oAPIResponse->state == 'success') {
                 # get items
@@ -52,11 +61,12 @@ class WPPLC_Article_Single extends Widget_Base {
 
                 # Get Fields from onePlace
                 $aFields = [];
-                $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/getfields/0');
+                $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/getfields/0', ['lang' => $sLang]);
                 if (is_object($oAPIResponse)) {
                     if ($oAPIResponse->state == 'success') {
-                        if (count($oAPIResponse->aFields) > 0) {
-                            foreach ($oAPIResponse->aFields as $oField) {
+                        $aFieldsApi = (array)$oAPIResponse->aFields;
+                        if (count($aFieldsApi) > 0) {
+                            foreach ($aFieldsApi as $oField) {
                                 $aFields[$oField->fieldkey] = $oField->label;
                             }
                         }
@@ -89,8 +99,9 @@ class WPPLC_Article_Single extends Widget_Base {
         $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/getfields/0');
         if(is_object($oAPIResponse)) {
             if($oAPIResponse->state == 'success') {
-                if(count($oAPIResponse->aFields) > 0) {
-                    foreach($oAPIResponse->aFields as $oField) {
+                $aFieldsApi = (array)$oAPIResponse->aFields;
+                if(count($aFieldsApi) > 0) {
+                    foreach($aFieldsApi as $oField) {
                         $aFields[$oField->fieldkey] = $oField->label;
                     }
                 }

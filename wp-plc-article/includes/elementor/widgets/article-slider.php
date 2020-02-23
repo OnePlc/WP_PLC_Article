@@ -4,6 +4,7 @@ use Elementor\Group_Control_Typography;
 use Elementor\Group_Control_Text_Shadow;
 use Elementor\Controls_Manager;
 use Elementor\Scheme_Typography;
+use Elementor\Group_Control_Background;
 
 class WPPLC_Article_Slider extends \Elementor\Widget_Base {
 
@@ -31,8 +32,22 @@ class WPPLC_Article_Slider extends \Elementor\Widget_Base {
         # Get Elementor Widgets Settings
         $aSettings = $this->get_settings_for_display();
 
+        $sLang = 'de_DE';
+        if(defined('ICL_LANGUAGE_CODE')) {
+            if (ICL_LANGUAGE_CODE == 'en') {
+                $sLang = 'en_US';
+            }
+            if (ICL_LANGUAGE_CODE == 'de') {
+                $sLang = 'de_DE';
+            }
+        }
+
         # Get Articles from onePlace API
-        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/0',['listmode'=>'entity']);
+        $aApiData = ['listmode' => 'entity', 'lang' => $sLang];
+        if($aSettings['slider_articles_filter'] != 'all' && $aSettings['slider_articles_filter'] != '') {
+            $aApiData['filter'] = $aSettings['slider_articles_filter'];
+        }
+        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/0',$aApiData);
 
         if($oAPIResponse->state == 'success') {
             # get items
@@ -43,7 +58,7 @@ class WPPLC_Article_Slider extends \Elementor\Widget_Base {
 
             # Get Fields from onePlace
             $aFields = [];
-            $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/getfields/0');
+            $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/getfields/0', ['lang' => $sLang]);
             if(is_object($oAPIResponse)) {
                 if($oAPIResponse->state == 'success') {
                     if(count($oAPIResponse->aFields) > 0) {
@@ -72,6 +87,23 @@ class WPPLC_Article_Slider extends \Elementor\Widget_Base {
     }
 
     protected function _register_controls() {
+        # Get Fields from onePlace
+        $aFields = [];
+        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/getfields/0');
+        $bHighLightFilterActive = false;
+        if(is_object($oAPIResponse)) {
+            if($oAPIResponse->state == 'success') {
+                if(count($oAPIResponse->aFields) > 0) {
+                    foreach($oAPIResponse->aFields as $oField) {
+                        if($oField->fieldkey == 'web_highlight_idfs') {
+                            $bHighLightFilterActive = true;
+                        }
+                        $aFields[$oField->fieldkey] = $oField->label;
+                    }
+                }
+            }
+        }
+
         /**
          * GENERAL SETTINGS - START
          * @since 1.0.0
@@ -103,21 +135,23 @@ class WPPLC_Article_Slider extends \Elementor\Widget_Base {
             ]
         );
 
+        $aSliderFilters = ['all' => __('All', 'wp-plc-article')];
+        if($bHighLightFilterActive) {
+            $aSliderFilters['highlights'] = __('Only Highlights', 'wp-plc-article');
+        }
+
+        $this->add_control(
+            'slider_articles_filter',
+            [
+                'label' => __( 'Articles in Slider', 'wp-plc-article' ),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'all',
+                'options' => $aSliderFilters,
+            ]
+        );
+
         # Section - End
         $this->end_controls_section();
-
-        # Get Fields from onePlace
-        $aFields = [];
-        $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/getfields/0');
-        if(is_object($oAPIResponse)) {
-            if($oAPIResponse->state == 'success') {
-                if(count($oAPIResponse->aFields) > 0) {
-                    foreach($oAPIResponse->aFields as $oField) {
-                        $aFields[$oField->fieldkey] = $oField->label;
-                    }
-                }
-            }
-        }
 
         # Section - Start
         $this->start_controls_section(
@@ -142,6 +176,50 @@ class WPPLC_Article_Slider extends \Elementor\Widget_Base {
 
         /**
          * GENERAL SETTINGS - END
+         * @since 1.0.0
+         */
+
+        /**
+         * STYLE SETTINGS - BOX - START
+         * @since 1.0.0
+         */
+        # Section - Start
+        $this->start_controls_section(
+            'slider_slide_box_settings',
+            [
+                'label' => __('Slides - Box', 'wp-plc-article'),
+                'tab' => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        # Background for box
+        $this->add_group_control(
+            Group_Control_Background::get_type(),
+            [
+                'name' => 'background',
+                'label' => __( 'Background', 'wp-plc-article' ),
+                'types' => [ 'classic', 'gradient', 'video' ],
+                'selector' => '{{WRAPPER}} .plc-article-slider-box-content',
+            ]
+        );
+
+        # Padding
+        $this->add_control(
+            'slider_box_padding',
+            [
+                'label' => __( 'Padding', 'wp-plc-article' ),
+                'type' => Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', '%', 'em' ],
+                'selectors' => [
+                    '{{WRAPPER}} .plc-article-slider-box-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        # Section - End
+        $this->end_controls_section();
+        /**
+         * STYLE SETTINGS - BOX - END
          * @since 1.0.0
          */
 

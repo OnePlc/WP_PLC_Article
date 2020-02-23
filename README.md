@@ -31,6 +31,18 @@ It is configured the work with the onePlace Article API `list` function - so as 
 at least the same data (you can return more), you should be able to use the widget without any code changes
 for your own, article based, modules.
 
+### Article Single View
+
+Single Page View for Articles
+
+### Article List View
+
+List View for Articles. Supporting filters.
+
+### Article Search 
+
+Article Search Widget
+
 ## Integrations
 
 Work the way you want! WP PLC Article Widgets come with optional full Elementor

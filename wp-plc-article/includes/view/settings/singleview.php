@@ -43,6 +43,27 @@
     </div>
     <!-- Article Single View Base Page -->
 
+    <h3>SEO Url Settings</h3>
+    <!-- Enable Article Single View Rewrite -->
+    <div class="plc-admin-settings-field">
+        <label class="plc-settings-switch">
+            <?php $bAddCustomArtNrToLink = get_option( 'plcarticle_singleview_add_customartnr_tohref', false ); ?>
+            <input name="plcarticle_singleview_add_customartnr_tohref" type="checkbox" <?=($bAddCustomArtNrToLink == 1)?'checked':''?> class="plc-settings-value" />
+            <span class="plc-settings-slider"></span>
+        </label>
+        <span>Add Custom Art Nr to Link</span>
+    </div>
+    <!-- Enable Article Single View Rewrite -->
+
+    <?php if($bAddCustomArtNrToLink) { ?>
+    <!-- SEO Links - Custom Art Nr Prefix -->
+    <div class="plc-admin-settings-field">
+        <input type="text" class="plc-settings-value" name="plcarticle_singleview_customartnr_linkprefix" value="<?=(!empty(get_option('plcarticle_singleview_customartnr_linkprefix'))) ? get_option('plcarticle_singleview_customartnr_linkprefix') : ''?>" />
+        <span>Custom Art Nr Prefix</span>
+    </div>
+        <!-- SEO Links - Custom Art Nr Prefix -->
+    <?php } ?>
+
     <hr/>
     <button class="plc-admin-settings-save plc-admin-btn plc-admin-btn-primary" plc-admin-page="page-singleview">Save Single View Settings</button>
     <!-- Save Button -->

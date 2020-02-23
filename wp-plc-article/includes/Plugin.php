@@ -23,6 +23,8 @@ final class Plugin {
      */
     private static $instance = null;
 
+    public static $aWidgetSettings = [];
+
     /**
      * Retrieves the main instance of the plugin.
      *
