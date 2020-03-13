@@ -123,6 +123,8 @@ final class Listview {
             $aParams['lang'] = $sLang;
         }
 
+        echo 'lang:'.$sLang;
+
         $sJson = str_replace(['\"'],['"'],$_REQUEST['widget_settings']);
         $aSettings = (array)json_decode($sJson);
         if(isset($aSettings['list_base_category'])) {

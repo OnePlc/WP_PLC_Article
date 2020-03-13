@@ -10,7 +10,7 @@
                     <!-- Slide Image -->
                     <figure class="plc-slider-image-box-img" style="width:100%; margin-bottom: <?=$aSettings['slider_item_spacer']['size'].$aSettings['slider_item_spacer']['unit']?>;">
                         <a href="#<?=$oItem->id?>" class="plc-article-popup" title="Mehr Informationen">
-                            <div style="height:200px; width:100%; min-width:100%; background:url(<?=$sHost?><?=$oItem->featured_image?>) no-repeat 100% 50%; background-size:cover;">
+                            <div style="height:200px; width:100%; min-width:100%; background:url('<?=$sHost?><?=$oItem->featured_image?>') no-repeat 100% 50%; background-size:cover;">
                                 &nbsp;
                             </div>
                         </a>
@@ -20,17 +20,23 @@
                     <!-- Slide Content -->
                     <div class="plc-article-slider-box-content" style="width:100%; text-align:center; margin-top:<?=$aSettings['slider_item_spacer']['size'].$aSettings['slider_item_spacer']['unit']?>; margin-bottom:<?=$aSettings['slider_item_spacer']['size'].$aSettings['slider_item_spacer']['unit']?>; min-height:200px;">
                         <!-- Title -->
-                        <div style="position: relative; overflow:hidden; vertical-align: middle;">
+                        <div style="height:40px; position: relative; overflow:hidden; vertical-align: middle;">
                             <?php
                             $sHref = '#';
                             if(get_option('plcarticle_singleview_slug')) {
-                                $sHref = '/'.get_option('plcarticle_singleview_slug');
-                                $sHref .= '/'.str_replace([' '],['-'],strtolower($oItem->label));
+                                $sHref = home_url().'/'.get_option('plcarticle_singleview_slug');
+                                if(defined('ICL_LANGUAGE_CODE')) {
+                                    $sHref = apply_filters( 'wpml_permalink', $sHref, ICL_LANGUAGE_CODE, true );
+                                }
+                                $sHref .= '/';
+                                $sHref .= str_replace([' '],['-'],strtolower($oItem->label));
                                 if(isset($oItem->custom_art_nr)) {
                                     $sHref .= '-vib-'.str_replace([' '],['-'],strtolower($oItem->custom_art_nr));
                                 }
                                 $sHref .= '/'.$oItem->id;
-                            } ?>
+                                //$sHref = str_replace(['//'],['/'],$sHref);
+                            }
+                            ?>
                             <?php $sClass = (get_option('plcarticle_singleview_slug')) ? '' : 'plc-article-popup'; ?>
                             <a href="<?=$sHref?>" class="<?=$sClass?>" title="Mehr Informationen">
                                 <h3 class="plc-slider-title" style="display: inline-block; width:100%; vertical-align:middle; text-align:<?=$aSettings['event_title_align']?>;">
@@ -48,7 +54,7 @@
                             if(is_array($aSettings['slider_featured_fields'])) {
                                 if (count($aSettings['slider_featured_fields']) > 0) {
                                     foreach ($aSettings['slider_featured_fields'] as $sFieldKey) { ?>
-                                        <div style="width:100%; display: inline-block;">
+                                        <div style="width:100%; display: inline-block; height:25px; overflow: hidden;">
                                             <div style="float:left; width:49%; text-align:left;"
                                                  class="plc-slider-attribute-label"><?= $aFields[$sFieldKey] ?></div>
                                             <div style="float:left; width:49%; text-align:right;"

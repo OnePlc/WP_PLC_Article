@@ -40,18 +40,20 @@ $iListPos = 1;
                     $sTitle = str_replace($aFindPlaceholders,$aReplacePlaceholders,$aSettings['listview_title_template']);
                     ?>
                     <?php if(get_option('plcarticle_singleview_active') == 1) {
-                        $sAttach = '';
-                        if(defined('ICL_LANGUAGE_CODE')) {
-                            $sAttach = '?lang='.ICL_LANGUAGE_CODE;
+                        $sHref = '#';
+                        if(get_option('plcarticle_singleview_slug')) {
+                            $sHref = home_url().'/'.get_option('plcarticle_singleview_slug');
+                            if(defined('ICL_LANGUAGE_CODE')) {
+                                $sHref = apply_filters( 'wpml_permalink', $sHref, ICL_LANGUAGE_CODE, true );
+                            }
+                            $sHref .= '/';
+                            $sHref .= str_replace([' '],['-'],strtolower($oItem->label));
+                            if(isset($oItem->custom_art_nr)) {
+                                $sHref .= '-vib-'.str_replace([' '],['-'],strtolower($oItem->custom_art_nr));
+                            }
+                            $sHref .= '/'.$oItem->id;
+                            //$sHref = str_replace(['//'],['/'],$sHref);
                         }
-                        $sHref = '/'.$sSingleViewSlug;
-                        $sHref .= '/'.str_replace([' '],['-'],strtolower($oItem->label));
-                        if(get_option('plcarticle_singleview_add_customartnr_tohref') == 1) {
-                            $sPrefix = get_option('plcarticle_singleview_customartnr_linkprefix');
-                            $sHref .= '-'.$sPrefix.'-'.$oItem->custom_art_nr;
-                        }
-                        $sHref .= '/'.$oItem->id;
-                        $sHref .= $sAttach;
                         ?>
                         <a href="<?=$sHref?>" title="<?=__('View Article','wp-plc-article')?>">
                             <h3><?=$sTitle?></h3>
@@ -72,7 +74,7 @@ $iListPos = 1;
                                 <!-- Additional required wrapper -->
                                 <div class="swiper-wrapper">
                                     <?php if($oItem->featured_image != '') { ?>
-                                        <div class="swiper-slide" style="background-size:contain; background: url(<?=$sHost?><?=$oItem->featured_image?>) center;">
+                                        <div class="swiper-slide" style="background-size:contain; background: url('<?=$sHost?><?=$oItem->featured_image?>') center;">
                                         </div>
                                     <?php } ?>
                                     <!-- Slides -->
@@ -84,7 +86,7 @@ $iListPos = 1;
                                                     continue;
                                                 }
                                                 ?>
-                                                <div class="swiper-slide" style="background-size:contain; background: url(<?=$sHost?>/data/article/<?=$oItem->id?>/<?=$sImg?>) center;">
+                                                <div class="swiper-slide" style="background-size:contain; background: url('<?=$sHost?>/data/article/<?=$oItem->id?>/<?=$sImg?>') center;">
                                                 </div>
                                                 <?php
                                             }
@@ -99,7 +101,7 @@ $iListPos = 1;
                         <div>
                             <div style="width:50%; float:left;">
                                 <!-- Button 1 -->
-                                <a href="<?=str_replace($aLinksFinds,$aLinkReplaces,$aSettings['list_view_button_1_link']['url'])?><?=$sAttach?>" class="plc-list-button">
+                                <a href="<?=$sHref?>w" class="plc-list-button">
                                     <i class="<?=$aSettings['list_view_button_1_icon']['value']?>" aria-hidden="true"></i>
                                     &nbsp;<?=$aSettings['list_view_button_1_text']?>
                                 </a>
@@ -157,7 +159,7 @@ $iListPos = 1;
                     if(!isset($oItem->featured_image)) { ?>
                         <div style="width:50%; float:left;">
                             <!-- Button 1 -->
-                            <a href="<?=str_replace(['##ID##','##title##'],[$oItem->id,$oItem->label],$aSettings['list_view_button_1_link']['url'])?><?=$sAttach?>  " class="plc-list-button">
+                            <a href="<?=$sHref?>" class="plc-list-button">
                                 <i class="<?=$aSettings['list_view_button_1_icon']['value']?>" aria-hidden="true"></i>
                                 &nbsp;<?=$aSettings['list_view_button_1_text']?>
                             </a>

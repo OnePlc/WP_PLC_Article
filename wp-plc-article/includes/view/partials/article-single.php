@@ -49,7 +49,7 @@ $sBrand = (isset($oItem->manufacturer_idfs)) ? $oItem->manufacturer_idfs->label 
                     <!-- Additional required wrapper -->
                     <div class="swiper-wrapper">
                         <?php if($oItem->featured_image != '') { ?>
-                            <div class="swiper-slide" style="background-size:contain; background: url(<?=$sHost?><?=$oItem->featured_image?>) center;">
+                            <div class="swiper-slide" style="background-size:contain; background: url('<?=$sHost?><?=$oItem->featured_image?>') center;">
                             </div>
                         <?php } ?>
                         <!-- Slides -->
@@ -61,7 +61,7 @@ $sBrand = (isset($oItem->manufacturer_idfs)) ? $oItem->manufacturer_idfs->label 
                                         continue;
                                     }
                                     ?>
-                                    <div class="swiper-slide" style="background-size:contain; background: url(<?=$sHost?>/data/article/<?=$oItem->id?>/<?=$sImg?>) center;">
+                                    <div class="swiper-slide" style="background-size:contain; background: url('<?=$sHost?>/data/article/<?=$oItem->id?>/<?=$sImg?>') center;">
                                     </div>
                                     <?php
                                 }
@@ -129,7 +129,24 @@ $sBrand = (isset($oItem->manufacturer_idfs)) ? $oItem->manufacturer_idfs->label 
                <h4 style="margin:0;" class="plc-single-description-title"><?=$aSettings['singleview_description_title']?></h4>
                <hr style="margin:0;"/>
            <?php } ?>
-           <div style="width:100%; display: inline-block" class="plc-single-description"><?=$oItem->description?></div>
+           <div style="width:100%; display: inline-block" class="plc-single-description">
+               <?php if(defined('ICL_LANGUAGE_CODE')) {
+                   $sLang = 'de_DE';
+                   switch(ICL_LANGUAGE_CODE) {
+                       case 'en':
+                           $sLang = 'en_us';
+                           break;
+                       default:
+                           break;
+                   }
+                   if(property_exists($oItem,'description_'.$sLang)) {
+                       $sDescName = 'description_'.$sLang;
+                       echo $oItem->$sDescName;
+                   }
+               } else {
+                   echo $oItem->description;
+               }?>
+           </div>
        </div>
     <?php } ?>
 </div>
