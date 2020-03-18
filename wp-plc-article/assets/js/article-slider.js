@@ -5,6 +5,14 @@ jQuery(function() {
             speed: 400,
             spaceBetween: 8,
             slidesPerView: iSliderPerView,
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                    type: 'bullets',
+            },
+            autoplay: {
+                delay: 5000,
+            },
             breakpoints: {
                 // when window width is >= 320px
                 320: {
@@ -18,7 +26,7 @@ jQuery(function() {
                 },
                 // when window width is >= 640px
                 640: {
-                    slidesPerView: 3,
+                    slidesPerView: iSliderPerView,
                     spaceBetween: 8
                 }
             }

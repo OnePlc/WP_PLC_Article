@@ -47,7 +47,7 @@ $iListPos = 1;
                                 $sHref = apply_filters( 'wpml_permalink', $sHref, ICL_LANGUAGE_CODE, true );
                             }
                             $sHref .= '/';
-                            $sHref .= str_replace([' '],['-'],strtolower($oItem->label));
+                            $sHref .= str_replace([' ','/'],['-','-'],strtolower($oItem->label));
                             if(isset($oItem->custom_art_nr)) {
                                 $sHref .= '-vib-'.str_replace([' '],['-'],strtolower($oItem->custom_art_nr));
                             }
@@ -66,31 +66,42 @@ $iListPos = 1;
                 <?php
                 $sSecondWidth = '100%';
                 if(isset($oItem->featured_image)) {
-                    $sSecondWidth = '50%'; ?>
+                    $sSecondWidth = '50%';
+                    $bPrintSingleImg = true;
+                    ?>
                     <div style="width:50%; float:left; display: inline-block;">
+                        <?php
+                        if(isset($oItem->gallery)) {
+                        if(count($oItem->gallery) > 0) {
+                            $bPrintSingleImg = false;
+                        ?>
                         <div style="width:100%; display:inline-block;">
                             <!-- Slider main container -->
-                            <div class="plc-list-swiper-container swiper-container" style="width:400px; max-width:100%; height:250px; margin-left:0; margin-bottom:10px;">
+                            <div class="plc-list-swiper-container swiper-container"
+                                 style="width:400px; max-width:100%; height:250px; margin-left:0; margin-bottom:10px;">
                                 <!-- Additional required wrapper -->
                                 <div class="swiper-wrapper">
-                                    <?php if($oItem->featured_image != '') { ?>
-                                        <div class="swiper-slide" style="background-size:contain; background: url('<?=$sHost?><?=$oItem->featured_image?>') center;">
+                                    <?php if ($oItem->featured_image != '') { ?>
+                                        <div class="swiper-slide">
+                                            <!-- data-elementor-open-lightbox="default" data-elementor-lightbox-slideshow="articlesingle-<?=$oItem->id?>" -->
+                                            <a href="<?=$sHref?>" class="">
+                                                <img src="<?= $sHost ?><?= $oItem->featured_image ?>" style="max-height:230px;" />
+                                            </a>
                                         </div>
                                     <?php } ?>
                                     <!-- Slides -->
                                     <?php
-                                    if(isset($oItem->gallery)) {
-                                        if(count($oItem->gallery) > 0) {
-                                            foreach($oItem->gallery as $sImg) {
-                                                if($sImg == basename($oItem->featured_image)) {
-                                                    continue;
-                                                }
-                                                ?>
-                                                <div class="swiper-slide" style="background-size:contain; background: url('<?=$sHost?>/data/article/<?=$oItem->id?>/<?=$sImg?>') center;">
-                                                </div>
-                                                <?php
-                                            }
+                                    foreach ($oItem->gallery as $sImg) {
+                                        if ($sImg == basename($oItem->featured_image)) {
+                                            continue;
                                         }
+                                        ?>
+                                        <div class="swiper-slide">
+                                            <a href="<?=$sHref?>" class="">
+                                                <img src="<?= $sHost ?>/data/article/<?=$oItem->id?>/<?= $sImg ?>" style="max-height:230px;" />
+                                            </a>
+                                        </div>
+                                        <?php
                                     }
                                     ?>
                                 </div>
@@ -98,12 +109,22 @@ $iListPos = 1;
                                 <div class="swiper-pagination"></div>
                             </div>
                         </div>
-                        <div>
+                        <?php }
+                            }
+                            if($bPrintSingleImg) {
+                            ?>
+                                <div style="width:100%; display: inline-block; margin-bottom:16px">
+                                <a href="<?=$sHref?>" class="">
+                                    <img src="<?= $sHost ?><?= $oItem->featured_image ?>" style="max-height:250px; max-width:100%;" />
+                                </a>
+                                </div>
+                            <?php } ?>
+                        <div style="margin-top:8px;">
                             <div style="width:50%; float:left;">
                                 <!-- Button 1 -->
-                                <a href="<?=$sHref?>w" class="plc-list-button">
+                                <a href="<?=$sHref?>" class="plc-list-button">
                                     <i class="<?=$aSettings['list_view_button_1_icon']['value']?>" aria-hidden="true"></i>
-                                    &nbsp;<?=$aSettings['list_view_button_1_text']?>
+                                    &nbsp;<?=__($aSettings['list_view_button_1_text'], 'wp-plc-article')?>
                                 </a>
                                 <!-- Button 1 -->
                             </div>
@@ -111,7 +132,7 @@ $iListPos = 1;
                                 <!-- Button 2 -->
                                 <a href="<?=str_replace($aLinksFinds,$aLinkReplaces,$aSettings['list_view_button_2_link']['url'])?>" class="plc-list-button">
                                     <i class="<?=$aSettings['list_view_button_2_icon']['value']?>" aria-hidden="true"></i>
-                                    &nbsp;<?=$aSettings['list_view_button_2_text']?>
+                                    &nbsp;<?=__($aSettings['list_view_button_2_text'], 'wp-plc-article')?>
                                 </a>
                                 <!-- Button 2 -->
                             </div>
@@ -198,10 +219,15 @@ $iListPos = 1;
         }
         for($i = $iStartPage;$i <= $iEndPage;$i++) { ?>
             <li style="float:left; position: relative; padding:4px; border:1px solid #000; margin:2px;">
-                <?php if($iPage == $i) { ?>
+                <?php if($iPage == $i) {
+                    $sHref = '/'.$sListViewSlug.'/index/0/'.$i;
+                    if(defined('ICL_LANGUAGE_CODE')) {
+                        $sHref = apply_filters( 'wpml_permalink', $sHref, ICL_LANGUAGE_CODE, true );
+                    }
+                    ?>
                     <?=$i?>
                 <?php } else { ?>
-                    <a href="/<?=$sListViewSlug?>/<?=$i?>">
+                    <a href="<?=$sHref?>">
                         <?=$i?>
                     </a>
                 <?php } ?>
@@ -229,7 +255,14 @@ $iListPos = 1;
         jQuery('.plc-list-swiper-container').each(function () {
             var mySwiper = new Swiper(jQuery(this), {
                 direction: 'horizontal',
-                loop: true
+                loop: true,
+                pagination: {
+                    el: '.swiper-pagination',
+                    type: 'bullets',
+                },
+                autoplay: {
+                    delay: 5000,
+                }
             });
         });
     });

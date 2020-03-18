@@ -39,6 +39,22 @@ final class Settings {
 
         // enqueue slider custom scripts for frontend
         add_action( 'wp_enqueue_scripts', [$this,'enqueueScripts'] );
+
+        add_filter('WPML_filter_link', [$this, 'ge_filter_link'], 20, 2);
+
+    }
+
+    public function ge_filter_link($url, $lang_info) {
+        if (get_query_var('article_id') != '') {
+            $url = $url.'/view/'.get_query_var('article_id');
+        }
+        if (get_query_var('list_page_id') != '') {
+            $url = $url.get_query_var('list_page_id');
+        }
+        if (get_query_var('list_base_category') != '') {
+            $url = $url.get_query_var('list_base_category');
+        }
+        return $url;
     }
 
     /**
@@ -85,6 +101,10 @@ final class Settings {
             wp_enqueue_script('plc-article-slider', '/wp-content/plugins/wp-plc-article/assets/js/article-slider.js', ['jquery']);
             wp_enqueue_style( 'plc-article-slider-style', '/wp-content/plugins/wp-plc-article/assets/css/article-slider.css');
         }
+        wp_enqueue_script('plc-overlay-search', plugins_url('assets/js/overlay-search.js',WPPLC_ARTICLE_MAIN_FILE) , ['jquery']);
+        wp_localize_script('plc-overlay-search', 'plcSettings', [
+            'pageURL' => get_site_url(),
+        ]);
     }
 
     /**

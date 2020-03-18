@@ -44,38 +44,56 @@ $sBrand = (isset($oItem->manufacturer_idfs)) ? $oItem->manufacturer_idfs->label 
     <div style="width:100%; display: inline-block;">
         <div style="width:50%; float:left;">
             <div style="width:100%; display:inline-block;">
+                <?php
+                $bPrintSingleImg = true;
+                if(isset($oItem->gallery)) {
+                if (count($oItem->gallery) > 0) {
+                    $bPrintSingleImg = false;
+                    ?>
                 <!-- Slider main container -->
-                <div class="plc-list-swiper-container swiper-container" style="width:400px; height:300px; margin-left:0;">
+                <div class="plc-list-swiper-container swiper-container"
+                     style="width:400px; height:300px; margin-left:0;" data-swiper-autoplay="2000">
                     <!-- Additional required wrapper -->
                     <div class="swiper-wrapper">
-                        <?php if($oItem->featured_image != '') { ?>
-                            <div class="swiper-slide" style="background-size:contain; background: url('<?=$sHost?><?=$oItem->featured_image?>') center;">
+                        <?php if ($oItem->featured_image != '') { ?>
+                            <div class="swiper-slide">
+                                <a href="<?= $sHost ?><?= $oItem->featured_image ?>" class="" data-elementor-open-lightbox="default" data-elementor-lightbox-slideshow="articlesingle-<?=$oItem->id?>">
+                                    <img src="<?= $sHost ?><?= $oItem->featured_image ?>" style="max-height:235px;" />
+                                </a>
                             </div>
                         <?php } ?>
                         <!-- Slides -->
                         <?php
-                        if(isset($oItem->gallery)) {
-                            if(count($oItem->gallery) > 0) {
-                                foreach($oItem->gallery as $sImg) {
-                                    if($sImg == basename($oItem->featured_image)) {
-                                        continue;
-                                    }
-                                    ?>
-                                    <div class="swiper-slide" style="background-size:contain; background: url('<?=$sHost?>/data/article/<?=$oItem->id?>/<?=$sImg?>') center;">
-                                    </div>
-                                    <?php
-                                }
+                        foreach ($oItem->gallery as $sImg) {
+                            if ($sImg == basename($oItem->featured_image)) {
+                                continue;
                             }
+                            ?>
+                            <div class="swiper-slide">
+                                <a href="<?= $sHost ?>/data/article/<?=$oItem->id?>/<?= $sImg ?>" class="" data-elementor-open-lightbox="default" data-elementor-lightbox-slideshow="articlesingle-<?=$oItem->id?>">
+                                    <img src="<?= $sHost ?>/data/article/<?=$oItem->id?>/<?= $sImg ?>" style="max-height:235px;" />
+                                </a>
+                            </div>
+                            <?php
                         }
                         ?>
                     </div>
                     <!-- If we need pagination -->
                     <div class="swiper-pagination"></div>
                 </div>
+                <?php }
+                }
+
+                if($bPrintSingleImg) {
+                ?>
+                    <a href="<?= $sHost ?><?= $oItem->featured_image ?>" class="" data-elementor-open-lightbox="default" data-elementor-lightbox-slideshow="articlesingle-<?=$oItem->id?>">
+                        <img src="<?= $sHost ?><?= $oItem->featured_image ?>" style="max-height:250px; max-width:100%;" />
+                    </a>
+                <?php } ?>
             </div>
         </div>
-        <div style="width:50%; float:left;">
-            <div style="width:100%; display: inline-block;">
+        <div style="width:50%; float:left; margin-top:20px;">
+            <div style="width:100%; display: inline-block; margin-top:20px;">
                 <?php
                 if(count($aSettings['singleview_featured_fields']) > 0) {
                     foreach($aSettings['singleview_featured_fields'] as $sFieldKey) { ?>
@@ -100,7 +118,7 @@ $sBrand = (isset($oItem->manufacturer_idfs)) ? $oItem->manufacturer_idfs->label 
                 }
                 ?>
             </div>
-            <div style="width:50%; float:left;">
+            <div style="width:50%; float:left; margin-top:20px;">
                 <!-- Button 1 -->
                 <a href="<?=str_replace(['##ID##','##title##'],[$oItem->id,$oItem->label],$aSettings['single_view_button_1_link']['url'])?>" class="plc-single-button" <?=($aSettings['single_view_button_1_link']['is_external']) ? 'target="_blank"' : ''?>>
                     <i class="<?=$aSettings['single_view_button_1_icon']['value']?>" aria-hidden="true"></i>
@@ -109,17 +127,20 @@ $sBrand = (isset($oItem->manufacturer_idfs)) ? $oItem->manufacturer_idfs->label 
                 <!-- Button 1 -->
             </div>
             <?php if(isset($oItem->weblink_youtube)) {
-                $sHref = str_replace($aFindPlaceholders,$aReplacePlaceholders,$aSettings['single_view_button_2_link']['url']);
-                ?>
-                <div style="width:50%; float:left;">
-                    <!-- Button YT -->
-                    <a href="<?=$sHref?>" class="plc-single-button" <?=($aSettings['single_view_button_2_link']['is_external']) ? 'target="_blank"' : ''?>>
-                        <i class="<?=$aSettings['single_view_button_2_icon']['value']?>" aria-hidden="true"></i>
-                        &nbsp;<?=$aSettings['single_view_button_2_text']?>
-                    </a>
-                    <!-- Button YT -->
-                </div>
-            <?php } ?>
+                if ($oItem->weblink_youtube != '') {
+                    $sHref = str_replace($aFindPlaceholders, $aReplacePlaceholders, $aSettings['single_view_button_2_link']['url']);
+                    ?>
+                    <div style="width:50%; float:left;  margin-top:20px;">
+                        <!-- Button YT -->
+                        <a href="<?= $sHref ?>"
+                           class="plc-single-button" <?= ($aSettings['single_view_button_2_link']['is_external']) ? 'target="_blank"' : '' ?>>
+                            <i class="<?= $aSettings['single_view_button_2_icon']['value'] ?>" aria-hidden="true"></i>
+                            &nbsp;<?= $aSettings['single_view_button_2_text'] ?>
+                        </a>
+                        <!-- Button YT -->
+                    </div>
+                <?php }
+            }?>
         </div>
     </div>
     <?php if($aSettings['singleview_show_description'] == 'yes') { ?>
@@ -131,16 +152,16 @@ $sBrand = (isset($oItem->manufacturer_idfs)) ? $oItem->manufacturer_idfs->label 
            <?php } ?>
            <div style="width:100%; display: inline-block" class="plc-single-description">
                <?php if(defined('ICL_LANGUAGE_CODE')) {
-                   $sLang = 'de_DE';
+                   $sLang = '';
                    switch(ICL_LANGUAGE_CODE) {
                        case 'en':
-                           $sLang = 'en_us';
+                           $sLang = '_en_us';
                            break;
                        default:
                            break;
                    }
-                   if(property_exists($oItem,'description_'.$sLang)) {
-                       $sDescName = 'description_'.$sLang;
+                   if(property_exists($oItem,'description'.$sLang)) {
+                       $sDescName = 'description'.$sLang;
                        echo $oItem->$sDescName;
                    }
                } else {
@@ -155,7 +176,14 @@ $sBrand = (isset($oItem->manufacturer_idfs)) ? $oItem->manufacturer_idfs->label 
         jQuery('.plc-list-swiper-container').each(function () {
             var mySwiper = new Swiper(jQuery(this), {
                 direction: 'horizontal',
-                loop: true
+                loop: true,
+                pagination: {
+                    el: '.swiper-pagination',
+                    type: 'bullets',
+                },
+                autoplay: {
+                    delay: 5000,
+                }
             });
         });
     });

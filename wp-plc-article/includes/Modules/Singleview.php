@@ -45,6 +45,7 @@ final class Singleview {
         add_filter( 'wpseo_sitemap_index', [$this, 'addSinglesToSitemap'] );
         add_action( 'init', [$this, 'registerSingleViewSitemap'], 99 );
         add_action( 'init', [$this, 'registerSingleViewSitemapActions'] );
+
     }
 
     public function registerSingleViewSitemapActions() {
@@ -59,7 +60,7 @@ final class Singleview {
     public function generateSitemap() {
         global $wpseo_sitemaps;
 
-        $aParams = ['listmode' => 'entity'];
+        $aParams = ['listmode' => 'entity', 'listmodefilter' => 'webonly'];
         $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/0', $aParams);
         $sSingleViewSlug = get_option('plcarticle_singleview_slug');
 

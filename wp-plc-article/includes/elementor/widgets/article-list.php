@@ -56,8 +56,23 @@ class WPPLC_Article_List extends Widget_Base {
 
         if($iBaseCat != 0) {
             $aParams['listmodefilter'] = 'webonly';
-            $aParams['filter'] = 'category';
-            $aParams['filtervalue'] = $iBaseCat;
+            $aParams['filter'] = json_encode(['category','state_idfs']);
+            $aParams['filtervalue'] = json_encode([$iBaseCat,34]);
+            //$aParams['filter'] = 'category';
+            //$aParams['filtervalue'] = $iBaseCat;
+        } else {
+            $aParams['filter'] = 'state_idfs';
+            $aParams['filtervalue'] = 34;
+        }
+        if(isset($_REQUEST['q'])) {
+            if(!is_array($aParams['filter'])) {
+                $aParams['filter'] = [$aParams['filter']];
+                $aParams['filtervalue'] = [$aParams['filtervalue']];
+            }
+            $aParams['filter'][] = 'label-like';
+            $aParams['filtervalue'][] = strip_tags($_REQUEST['q']);
+            $aParams['filter'] = json_encode($aParams['filter']);
+            $aParams['filtervalue'] = json_encode($aParams['filtervalue']);
         }
 
         $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/'.$iPage, $aParams);
@@ -80,6 +95,7 @@ class WPPLC_Article_List extends Widget_Base {
             require_once(__DIR__ . '/../../view/partials/article-list.php');
         } else {
             echo 'error loading articles';
+            var_dump($oAPIResponse);
         }
     }
 

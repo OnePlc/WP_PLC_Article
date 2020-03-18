@@ -62,11 +62,12 @@ final class Listview {
     public function generateSitemap() {
         global $wpseo_sitemaps;
 
-        $aParams = ['listmode' => 'entity'];
+        $aParams = ['listmode' => 'entity', 'listmodefilter' => 'webonly'];
         $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/1', $aParams);
         $sSingleViewSlug = get_option('plcarticle_listview_slug');
 
         $output = '';
+
         if ($oAPIResponse->state == 'success') {
             # get items
             $iPages = $oAPIResponse->pages;

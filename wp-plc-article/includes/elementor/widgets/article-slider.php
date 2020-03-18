@@ -48,7 +48,6 @@ class WPPLC_Article_Slider extends \Elementor\Widget_Base {
             $aApiData['filter'] = $aSettings['slider_articles_filter'];
         }
         $oAPIResponse = \OnePlace\Connect\Plugin::getDataFromAPI('/article/api/list/0',$aApiData);
-
         if($oAPIResponse->state == 'success') {
             # get items
             $aItems = $oAPIResponse->results;
@@ -137,7 +136,7 @@ class WPPLC_Article_Slider extends \Elementor\Widget_Base {
 
         $aSliderFilters = ['all' => __('All', 'wp-plc-article')];
         if($bHighLightFilterActive) {
-            $aSliderFilters['highlights'] = __('Only Highlights', 'wp-plc-article');
+            $aSliderFilters['highlightsdep'] = __('Only Highlights', 'wp-plc-article');
         }
 
         $this->add_control(
